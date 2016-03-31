@@ -1,0 +1,686 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font-family: 'Roboto', arial, sans-serif;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*----------------------------------*/
+
+/* Copyright (C) Andres Canelones 2016 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Andrés Canelones <andrescanelones10@gmail.com>, January 2016
+ */
+
+h2 {
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #584E39;
+}
+
+select, input {
+    margin-right: 20px;
+}
+
+select {
+    font-size: 0.8em;
+    font-family: 'Roboto', sans-serif;
+    
+}
+
+a {
+    text-decoration: none;
+    color: #782f40;
+}
+
+a:hover {
+    border-bottom: dotted 1px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* bulk actions */
+
+#bulk_actions {
+    border: solid 1px #efefef;
+    box-shadow: 1px 1px 1px #F5F5F5;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#bulk_title {
+    font-size: 1em;
+    float: left;
+    margin-right: 10px;
+}
+
+td.bulk {
+    border-right: dotted 1px #ccc;
+}
+
+th#bulk_all, td.bulk {
+    padding: 0 0 0 5px!important;
+    max-width: 30px;
+}
+
+.bulk_submenu {
+    display: inline-flex;
+    margin-right: 10px;
+}
+
+.bulk_submenu p {
+    font-size: 0.9em;
+    margin-right: 10px;
+    color: #666;
+}
+
+#bulk_execute_button {
+    display: inline-flex;
+}
+
+#bulk_cancel_button {
+    display: inline-flex;
+    margin-left: 20px;
+    width: 10px;
+    height: 10px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+/*----------------*/
+
+#list-wrapper {
+    width: 95%;
+    margin: 0 auto;
+}
+
+#app_table {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+#app_table th, td {
+    padding: 12px 20px 12px 10px;
+    text-align: left;
+	box-sizing: border-box;
+    font-size: 0.8em;
+}
+
+th {
+    font-weight: 500;
+    border-bottom: solid 1px #ccc;
+}
+
+#head_row {
+	margin-bottom: 10px;
+}
+
+.app_row {
+    transition: background 0.1s ease-in-out;
+}
+
+.app_row:nth-of-type(odd) {
+    background: #F1F1F1;
+    transition: background 0.1s ease-in-out;
+}
+
+.sort-icon {
+	max-width: 7px;
+	display: none;
+}
+
+.edit-icon {
+    max-width: 12px;
+    padding-left: 10px;
+    float: right;
+}
+
+.action-icon {
+    max-width: 15px;
+    display: inline;
+    margin-right:15px;
+    cursor: pointer;
+}
+
+#title-bar {
+    height: 60px;
+    background: #782F40;
+    margin-bottom: 30px;
+}
+
+#logo {
+    max-width: 50px;
+    padding: 5px 20px;
+    display: block;
+    float: left;
+}
+
+#title {
+	color: #fff;
+    font-weight: 300;
+    font-size: 1.5em;
+    padding-top: 17px;
+    float: left;
+}
+
+/*user box*/
+
+#user_box {
+    background: #561F2C;
+    float: right;
+    right: 2.5%;
+    overflow: hidden;
+    position: relative;
+    top: 13px;
+    padding: 7px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    color: #FFF;
+}
+
+#user_name {
+    vertical-align: middle;
+}
+
+#user_box img {
+    width: 15px;
+    margin-left: 17px;
+    cursor: pointer;
+    float: right;
+}
+
+#query_param {
+    background: rgb(232, 219, 189);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.fee_cell span, .status_cell span, .processor_cell span {
+    cursor: pointer;
+}
+
+#reference-row {
+    display: none;
+}
+
+#success_message {
+    z-index: 1;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: #7AB55B;
+    font-size: 0.9em;
+    color: white;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: #699A50 2px 2px 0px;
+}
+
+#error_message {
+    z-index: 1;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: #b51e1e;
+    font-size: 0.9em;
+    color: white;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: #5a0f0f 2px 2px 0px;
+}
+
+#warning_message {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s;
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: #F7A612;
+    font-size: 0.9em;
+    color: white;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: #9A6910 2px 2px 0px;
+}
+
+/* Prompt message style */
+#prompt, #password_dialog {
+    z-index: 1;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, 0);
+    position: fixed;
+    width: 400px;
+    padding: 30px 20px;
+    background-color: #F1F1F1;
+    border-radius: 5px;
+    box-shadow: 3px 3px 6px #6B6B6B;
+    box-sizing: border-box;
+}
+
+#prompt p, #password_dialog p {
+    margin: 0 0 20px 0;
+    line-height: 20px;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.prompt_button {
+    border: 0;
+    padding: 6px 11px;
+    margin-right: 11px;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 1px 1px 1px #ccc;
+    font-family: 'roboto', sans-serif;
+    cursor: pointer;
+    float: right;
+    color: #505050;
+}
+
+#prompt_bg {
+    position: fixed;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+/* table formatting */
+
+td {
+    vertical-align: middle;
+}
+
+td.date_cell, td.fee_cell {
+    width: 10%;
+}
+
+td.app_pack_cell {
+    width: 8%;
+}
+
+td.status_cell {
+    width: 13%;
+}
+
+td.processor_cell {
+    width: 16%;
+}
+
+/*application comments*/
+.EMPLID_cell p {
+    cursor: pointer;
+    color: #782f40;    
+    display: inline
+}
+
+.EMPLID_cell p:hover {
+    border-bottom: dotted 1px; 
+}
+
+#app_details_row {
+    height: 0;
+    border-bottom: solid 1px #ccc;
+    transition: height 0.1s ease-in;
+}
+
+#app_details_row td {
+    vertical-align: top;
+}
+
+#app_details_row h2 {
+    font-size: 1.7em;
+    font-weight: 400;
+    color: #782f40;
+}
+
+#app_details {
+    margin-top: -20px;
+    display: none;
+    transition: margin-top 0.1s ease-in-out;
+}
+
+#app_details h3 {
+    font-size: 1.35em;
+    font-weight: 400;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+#app_comment {
+    width: 650px;
+    max-height: 160px;
+    overflow-y: scroll;
+    line-height: 18px;
+    color: #3A3A3A;
+    background: #F9F9F9;
+    border: solid 1px #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 1.25em;
+}
+
+#app_nocomment {
+    color: #666;
+    font-style: italic;
+}
+
+.comments_open {
+    background: rgb(232, 219, 189)!important;
+    padding: 5px;
+    border: solid 2px #CEC1A3;
+}
+
+#edit_comments {
+    position: relative;
+    margin-top: 15px;
+    background: #782f40;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 5px;
+    color: #FFF;
+    margin-left: -3px;
+    cursor: pointer;
+}
+
+#save_comment {
+    position: relative;
+    margin-top: 10px;
+    float: left;
+    clear: both;
+    background: #782f40;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 5px;
+    color: #FFF;
+    margin-left: -3px;
+    cursor: pointer;
+}
+
+#cancel_edit {
+    position: relative;
+    margin-top: 10px;
+    float: left;
+    background: #ADADAD;
+    color: #FFF;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+#comment_edit {
+    width: 600px;
+    height: 160px;
+    resize: none;
+    float: left;
+    border-radius: 5px;
+    border: solid 1px #CACACA;
+    box-shadow: inset 1px 1px 5px #E2E2E2;
+    padding: 10px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* actions */
+
+.actions_cell {
+    border-left: dotted 1px #ccc;
+}
+
+/* login */
+
+#login_form, .settings_container {
+    width: 600px;
+    margin: 0 auto;
+    border: solid 1px #d2d2d2;
+    border-top: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    border-radius: 0 0 5px 5px;
+}
+
+#form_table {
+    width: 100%;
+}
+
+.title_bar {
+    z-index: -1;
+    position: relative;
+    width: 600px;
+    background: #ECECEC;
+    margin: 0 auto;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    color: #666;
+    border: solid 1px #b5b5b5;
+    border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.title_bar h2 {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+label {
+    color: #666;
+    font-size: 1.1em;
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+.text_input {
+    width: 96%;
+    padding: 11px;
+    border: solid 1px #E2E2E2;
+    border-radius: 7px;
+    font-family: roboto, arial, sans-serif;
+    font-size: 1.2em;
+    color: #782F40;
+    outline: none;
+    box-shadow: inset -1px -1px 4px #EFEFEF;
+}
+
+.button {
+    background: #782F40;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1em;
+}
+
+
+
+.label_cell {
+    width: 25%;
+}
+
+.select_input {
+    padding: 7px;
+    border: solid 1px #E2E2E2;
+    width: 140px;
+    border-radius: 5px;
+    font-family: roboto, arial, sans-serif;
+    font-size: 1em;
+    color: #666;
+    outline: none;
+}
+
+.description {
+    font-size: 0.9em;
+    font-weight: 400;
+    color: #969696;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+/*user settings*/
+
+#settings_container div {
+    margin-bottom: 10px;
+}
+
+.setting_title {
+    float: left;
+    margin-right: 30px;
+    width: 25%;
+    padding: 10px 0;
+}
+.setting_title h2 {
+    font-size: 0.9em;
+    color: #666
+}
+
+.settings_area {
+    width: 64%;
+    display: inline-block;
+    padding: 10px 0 10px 30px;
+    border-left: solid 1px #ccc;
+}
+
+.settings_area h3, #password_dialog h3, .settings_container h3 {
+    font-size: 1em;
+    font-weight: 400;
+    color: #666;
+}
+
+.settings_area .text_input {
+    font-size: 1em;
+    padding: 9px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.settings_area .button{
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.settings_area input[type="submit"] {
+    float: right;
+    margin: 0;
+}
+
+/* for password change dialog */
+#password_dialog {
+    top: 20%;
+}
+
+#password_dialog .text_input {
+    margin: 10px 0 15px 0;
+    width: 90%;
+    padding: 5px;
+}
+
+#password_dialog h1 {
+    font-size: 1.3em;
+    font-weight: 400;
+    color: #782F40;
+    margin-bottom: 15px;
+}
+
+#password_dialog .description {
+    margin-bottom: 0;
+}
+
+/*manage_users*/
+
+#user_table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#user_table th {
+    text-align: left;
+    color: #782f40;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+}
+
+#user_table td {
+    padding-left: 0;
+}
+
+#user_table .action-icon {
+    float: right;
+}
+
+#user_table .edit-icon {
+    padding: 0;
+    margin-right: 10px;
+}
+
+.user_role span {
+    cursor: pointer;
+}
