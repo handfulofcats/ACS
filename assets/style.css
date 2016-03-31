@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic);
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -543,7 +545,7 @@ label {
     padding: 11px;
     border: solid 1px #E2E2E2;
     border-radius: 7px;
-    font-family: roboto, arial, sans-serif;
+    font-family: 'Roboto', arial, sans-serif;
     font-size: 1.2em;
     color: #782F40;
     outline: none;
@@ -571,7 +573,7 @@ label {
     border: solid 1px #E2E2E2;
     width: 140px;
     border-radius: 5px;
-    font-family: roboto, arial, sans-serif;
+    font-family: 'Roboto', arial, sans-serif;
     font-size: 1em;
     color: #666;
     outline: none;
