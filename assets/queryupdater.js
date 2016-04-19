@@ -6,6 +6,9 @@
 
 /*----- html strings repository (to keep code readable) -----*/
 
+var sortby = 'date';
+var order = 'DESC';
+
 var fee_update = "<select class=\"update_select\" name=\"update_select\">\r\n<option value=\"not paid\">not paid<\/option>\r\n<option value=\"paid\">paid<\/option>\r\n<\/select>";
 
 var status_update = "<select class=\"update_select\" name=\"update_select\">\r\n" +
@@ -40,6 +43,8 @@ function GetAdmissionProcessors() {
         },
         error: function( jqxhr, textStatus, error ) {
             displayMessage("An unexpected error ocurred. Please reload the site.", "error_message");
+            console.log(jqxhr);
+            console.log(textStatus);
             console.log(error);
         }
     });
@@ -83,9 +88,7 @@ function displayPrompt(message, callback) {
 	var response; // Declare variable that will be returned
 	
 	$('.prompt_button').on('click', function() {
-		//console.log("val: " + $(this).val());
 		response = Number($(this).val()); //store response from user
-		//console.log("response: '" + response + "'");
 		$('#prompt, #prompt_bg').remove(); //Remove prompt from DOM
 		callback(Boolean(response));
 	});
@@ -136,6 +139,11 @@ function SetHandlers(row) {
         },100);
        
 	});
+    
+    // Add documents to application package
+    row.find(".actions_transcripts").on("click", function(e){
+       modifyPackage($(this).closest("tr")); 
+    });
     
     // Delete application
     row.find(".actions_delete").on("click", function(e){
@@ -300,7 +308,6 @@ function GetFilters() {
 
 // enabling and disabling bulk actions menu
 function enableBulk() {
-    console.log("enableBulk()");
     
     function loop(callback) {
                 
@@ -310,38 +317,30 @@ function enableBulk() {
             if ( $(this).prop("checked") == true ) //if there's at least one checkbox checked enable bulk actions
             {
                 $("#bulk_action").prop("disabled",false);
-                console.log("enabling bulk actions and exiting");
                 checked = true; //set callback response to true
                 return false; //break out of each loop
             }
-        });
-        console.log("callback time");       
+        });    
         callback(checked);  //go to callback   
     };
     
     loop(function(response){
        if (response == true)
        {
-           console.log("callback response true");
            return false; //do nothing, break out
        } 
        else
        {
-           console.log("callback response false");
            $("#bulk_action").find('option[value=""]').prop("selected",true); // Reset bulk actions dropdown
 	       $("#bulk_action").prop("disabled",true);
 	       $('#bulk_actions').find('.bulk_submenu').remove(); //remove any lingering submenus
-           console.log("no row selected for bulk actions");
 		   return true;
        }
     });
-    
-    //console.log("end of enableBulk()");
 };
 
 // Execute bulk actions
 function executeBulkAction() {
-	//console.log("executeBulkAction() entered");
 	var promptMessage = "This will modify " + $('.bulk_select:checked:enabled').length + " record(s). <br/> Are you sure you want to do this?";
 	
     displayPrompt(promptMessage, function(response){
@@ -370,21 +369,18 @@ function executeBulkAction() {
 		{
 		case "change_status":			
 			newVal = $('.bulk_submenu .update_select').val(); // New value
-			//console.log("change_status newVal: '" + newVal + "'");
 			oldVal = updateTarget['row'].find("status_cell").text(); //old value
 			cell = "status";					
 			break;
 			
 		case "change_fee_status":
 			newVal = $('.bulk_submenu .update_select').val(); // New value
-			//console.log("change_fee_status newVal: '" + newVal + "'");
 			oldVal = updateTarget['row'].find("fee_cell").text(); //old value
 			cell = "fee_paid";
 			break;
 			
 		case "assign_processor":
 			newVal = $('.bulk_submenu .update_select').val(); // New value
-			//console.log("assign_processor newVal: '" + newVal + "'");
 			oldVal = updateTarget['row'].find("processor_cell").text(); //old value
 			cell = "processor";
 			break;
@@ -394,7 +390,6 @@ function executeBulkAction() {
 			
 		default:
 			return false; //break out
-			break;
 		}
 		
 		//perform bulk actions
@@ -501,7 +496,6 @@ function DisplayComments(cell) {
     // If row clicked is open, close and return
     if ( cell.closest("tr").attr("comments_open") == "true" )
     {
-        console.log("it was true");
         cell.closest("tr").removeAttr("comments_open");
         cell.closest("tr").removeClass("comments_open");
         $("#app_details_row").remove();
@@ -538,7 +532,6 @@ function DisplayComments(cell) {
                 $("#app_details_row").append(html);  // Insert retrieved data into DOM
                 
                 $('#edit_comments').on("click", function(){
-                    console.log("clickie displaycomments");
 	                EditComments($(this).closest("tr").prev());
                 });
                 
@@ -553,12 +546,9 @@ function DisplayComments(cell) {
             displayMessage("Comments could not be retrieved right now.", "error_message");
         }
     });
-   
-    //console.log("end of DisplayComments()");
 };
 
 function EditComments(row) {
-    console.log("editcomments");
     
     if ($("#app_details_row p").attr("id") == "app_nocomment") //if no comments
     {   
@@ -597,9 +587,7 @@ function EditComments(row) {
 		};
         
         if ($(this).attr("id") == "save_comment") // if 'Save' was clicked, save
-        {
-            console.log("save");
-            
+        {            
             var newComment = $("#comment_edit").val();
             
             var targetData = JSON.stringify(target);
@@ -630,7 +618,6 @@ function EditComments(row) {
                         $("#app_details").fadeIn(70).css("margin-top","5px"); // Fade in data
                         
                         $('#edit_comments').on("click", function(){
-                            console.log("clickie editcomments");
                             EditComments($(this).closest("tr").prev());
                         });
                     }, 90);
@@ -690,14 +677,174 @@ function DeleteApplication(row) {
                                            
 }; // end of deleteApplication
 
+///ADDING FILES TO APPLICATION PACKAGE
+function modifyPackage(row) {
+    
+    var target = { 
+            EMPLID:  row.attr('id'),
+            term: 	 row.find(".term_cell").text(),
+            year: 	 row.find(".year_cell").text()
+    };
+    
+    //the dialog
+    var dialog = "<h3>Add documents to the application package of " + row.find(".first_name_cell").text() + " " + row.find(".last_name_cell").text() + "</h3>" +
+                 "<p class=\"description\">You can select multiple files. Only PDF and JPEG files are allowed. 1MB max size.</p>" +
+                 "<form id=\"modifyPackage\" name=\"modifyPackage\" enctype=\"multipart/form-data\">" +
+                 "<input type=\"file\" name=\"app_documents[]\" id=\"app_documents\" multiple/>" +
+                 "<input type=\"hidden\" name=\"func\" value=\"modifyPackage\" />"
+                 "</form>";
+        
+    
+    // Add prompt div to the DOM
+	$('body').prepend("<div id=\"modifyPackagePrompt\">\r\n" + dialog + "\r\n" +
+    "<input type=\"submit\" value=\"Upload files\" class=\"prompt_button\"/>\r\n" +
+	"<button id=\"modifyPackage_close\" class=\"prompt_button\">Cancel<\/button>\r\n<\/div>" +
+	"<div id=\"prompt_bg\"></div>");
+    
+    $("#modifyPackage_close").on("click", function(){
+        $("#modifyPackagePrompt, #prompt_bg").remove();
+        return false;
+    });
+    
+    var files;  // to store uploaded files
+    
+    // store the files when they're selected
+    $("#app_documents").on("change", function(e){
+        files = event.target.files;
+    });
+    
+    //on submit
+    $("#modifyPackage").on('submit', function(e) {
+         
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // prevent submission with no files
+        if ($("#app_documents").val() == "")
+        {
+            displayMessage("You must select at least one file.","error_message");
+            return false;
+        }
+        
+        // display uploading files message
+        $('body').prepend("<div id=\"warning_message\">Uploading files, please wait...<\/div>");
+             
+        setTimeout(function(){
+        $("#warning_message").css("opacity","1");
+        $("#warning_message").css("z-index","1");
+        },100);
+        
+        $("#modifyPackage_close").prop("disabled",true); // disable cancel button
+        
+        // create FormData object and append selected files 
+        var formData = new FormData();
+        $.each(files, function(key, value){
+            formData.append(key,value);
+        })
+        
+        formData.append("func","modifyPackage");    // append func variable
+        formData.append("target",JSON.stringify(target)); // append target data
+        
+        // AJAX request
+        $.ajax({
+            url: "assets/ajaxcatcher.php",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(json){
+                $("#modifyPackagePrompt, #prompt_bg").remove(); // remove upload dialogue
+                displayMessage(json["message"], json["type"]); // this will display an appropriate message depending on whether it failed or it succeded
+            },
+            error: function(jqxhr, textStatus, error){
+                displayMessage("There was an unexpected error while trying to update the application package. Please try again.","error_message");
+                console.log(error);
+                console.log(jqxhr);
+                console.log(textStatus);
+            },
+            
+        });
+     });
+     
+     
+    
+};
+
 
 //-------------------------------------------------------------------------/
 
+
+
+function qsort(array, sortby, numeric) {
+    
+    // base condition
+    if (array.length <= 1)
+        return array;
+        
+    var pindex = Math.floor(Math.random() * (array.length - 0) + 0);    // pivot index
+    var pivot = array[pindex];  // pivot value
+    var left = [];  // left partition
+    var right = []; // right partition
+    array = array.slice(0,pindex).concat(array.slice(pindex + 1)); // we extract the pivot from the array
+    var comp2 = $("#" + pivot).find("." + sortby).text();
+    
+    for (var i = 0; i < array.length; ++i)
+    {
+        //get values to be compared
+        var comp1 = $("#" + array[i]).find("." + sortby).text();       
+        
+        // if comparison values are numeric
+        if (numeric == true)
+        {
+            //cast values as Numbers
+            comp1 = Number(comp1);
+            comp2 = Number(comp2);
+            
+            if (comp1 < comp2)
+            {
+                left.push(array[i]); // it's a value < the pivot
+            }
+            else
+            {
+                right.push(array[i]); // // it's a value > the pivot
+            }           
+        }
+        else 
+        {
+            //lesser
+            if (comp1.localeCompare(comp2, 'es', {sensitivity: 'base'}) < 0) //localeCompare provides string comparison
+            {
+                left.push(array[i]);
+            }
+            //greater
+            else if (comp1.localeCompare(comp2, 'es', {sensitivity: 'base'}) > 0)
+            {
+                right.push(array[i]);
+            }
+            //if strings are the same, sort by EMPLID
+            else
+            {
+                if (array[i] < pivot)
+                {
+                    left.push(array[i])
+                }
+                else
+                {
+                    right.push(array[i]);
+                }
+            }
+        }
+    }
+    
+    console.log(array);
+    return (qsort(left, sortby, numeric)).concat([pivot],qsort(right, sortby, numeric));
+    
+}
+
+
 //Start of document
 $( document ).ready(function() {
-
-var sortby = 'date';
-var order = 'DESC';
 
 //SetHandlers on all rows for the first time
 $(".app_row").each(function() {
@@ -731,7 +878,7 @@ $("#reset_filter").click(function(e){
 
 //change sort order
 
-$(".sort_button").click(function(e){	
+/*$(".sort_button").click(function(e){	
 
 	var filter = GetFilters();
 	
@@ -767,7 +914,113 @@ $(".sort_button").click(function(e){
 	}
 	
 	GetApplications(filter, sortby, order);
+});*/
+
+$(".sort_button").click(function(){
+   
+   var sortby = $(this).attr('id');
+   var order;
+   var reverse = false; // to check if user just wants to reverse sort order
+   
+   //If the clicked column is the one currently sorting, and the current order is DESC
+   if ( $(this).attr("sort") == "DESC" )
+   {
+       reverse = true;
+       order = "ASC";
+	   $(this).attr("sort","ASC");
+       
+       $(".sort-icon").css("display","none");
+	   $(".asc", $(this)).css("display","inline");
+   }
+   //if current order is ASC
+   else if ( $(this).attr("sort") == "ASC" )
+   {      
+       reverse = true;
+       order = "DESC";
+	   $(this).attr("sort","DESC");
+       
+       $(".sort-icon").css("display","none");
+	   $(".sort-icon.desc", $(this)).css("display","inline");
+   }
+   //if not being sorted by this column, set it to DESC
+   else if ( $(this).attr("sort") == "" )
+   {
+       order = "DESC";
+	   $(this).attr("sort","DESC");
+       
+       $(".sort-icon").css("display","none");
+	   $(".sort-icon.desc", $(this)).css("display","inline");
+   }
+   
+   var rows = [];   //array to store row IDs
+   
+   $(".app_row").each(function(){
+       rows.push($(this).attr('id')); //push all row IDs into array
+   })
+   
+   console.log("rows:" + rows);
+   
+   if (reverse == true)
+   {
+       $.each(rows, function(index, value){
+        $("#head_row").after($("#" + value)); 
+      });
+      return true; // exit event handler
+   }
+   
+   console.log(rows);
+   var sortedArray;
+   switch(sortby) {
+       case "EMPLID":
+            sortedArray = qsort(rows,"EMPLID_cell", true);
+            console.log(sortedArray);
+            break;
+       case "last_name":
+            sortedArray = qsort(rows, "last_name_cell", false);
+            break;
+       case "first_name":
+            sortedArray = qsort(rows, "first_name_cell", false);
+            break;
+       case "date":
+            sortedArray = qsort(rows, "date_cell", false);
+            break;
+       case "app_semester":
+            sortedArray = qsort(rows, "term_cell", false);
+            break;
+       case "app_year":
+            sortedArray = qsort(rows, "year_cell", true);
+            break;
+       case "fee_paid":
+            sortedArray = qsort(rows, "fee_cell", false);
+            break;
+       case "status":
+            sortedArray = qsort(rows, "status_cell", false);
+            break;
+       case "processor":
+            sortedArray = qsort(rows, "processor_cell", false);
+            break;
+       default:
+            break;
+   }
+   
+   console.log("final array: " + sortedArray);
+   
+   if (order == "ASC")
+   {
+      $.each(sortedArray, function(index, value){
+        $("#head_row").after($("#" + value)); 
+      });
+   }
+   else
+   {
+      $.each(sortedArray.reverse(), function(index, value){
+        $("#head_row").after($("#" + value)); 
+      });
+   }
+
+    
 });
+
 
 ////////////////////
 //Bulk processing///
@@ -815,7 +1068,6 @@ $('#bulk_action').on("change", function() {
 			break;
 			
 		default:
-			//console.log("default");
 			break;
 	}
 	
@@ -832,9 +1084,8 @@ $('#bulk_action').on("change", function() {
 	
 });
 
-
-
 //----------------------------------------------------------------------------//
+
 
 }); //end of document.ready
 
